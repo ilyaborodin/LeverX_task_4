@@ -9,20 +9,17 @@ data_mysql = {
 
 
 class MysqlConnector:
-    def __init__(self, mysql_data):
-        self.connection = pymysql.connect(data_mysql)
+    def __init__(self, data_mysql):
+        self.connection = pymysql.connect(data_mysql["host"], data_mysql["user"],
+                                          data_mysql["password"], data_mysql["db"])
         self.cursor = self.connection.cursor()
 
     def __enter__(self):
-        self.open()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.commit()
         self.close()
-
-    def open(self) -> None:
-        self.connection.open()
 
     def close(self) -> None:
         self.connection.close()
