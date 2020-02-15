@@ -1,4 +1,3 @@
-from Mysql_connector import MysqlConnector, data_mysql
 from dataclasses import dataclass
 
 
@@ -9,10 +8,11 @@ class Room:
 
 
 class RoomDB:
-    def __init__(self, mysql_connector):
-        self.mysql_connector = mysql_connector
+    def __init__(self, mysql_connector, data_mysql):
+        self.MysqlConnector = mysql_connector
+        self.data_mysql = data_mysql
 
-    def load_in_db(self, Rooms: list) -> None:
+    def load_in_db(self, rooms: list) -> None:
         pass
 
     def get_all(self) -> list:
@@ -26,3 +26,10 @@ class RoomDB:
 
     def get_with_heterosexuals(self) -> list:
         pass
+
+    def create_table(self):
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = 'CREATE TABLE rooms(' \
+                  'id INTEGER PRIMARY KEY NOT NULL, ' \
+                  'name VARCHAR(100) NOT NULL)'
+            db.execute(sql)
