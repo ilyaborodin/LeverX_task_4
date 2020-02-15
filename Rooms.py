@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 from pymysql.err import IntegrityError
-from collections import namedtuple
 
 
 @dataclass
