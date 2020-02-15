@@ -1,5 +1,5 @@
-from Mysql_connector import MysqlConnector, data_mysql
 from dataclasses import dataclass
+from pymysql.err import IntegrityError
 
 
 @dataclass
@@ -19,7 +19,18 @@ class StudentDB:
             self.create_table()
 
     def load_in_db(self, students: list) -> None:
-        pass
+        with self.MysqlConnector(self.data_mysql) as db:
+            for student in students:
+                sql = "INSERT INTO students (id, name, birthday, sex, room)" \
+                      " VALUES ({id}, '{name}', '{birthday}', '{sex}', {room})".format(id=student.id,
+                                                                                name=student.name,
+                                                                                birthday=student.birthday,
+                                                                                sex=student.sex,
+                                                                                room=student.room)
+                try:
+                    db.execute(sql)
+                except IntegrityError:
+                    continue
 
     def create_table(self):
         with self.MysqlConnector(self.data_mysql) as db:
