@@ -1,10 +1,12 @@
 from Mysql_connector import MysqlConnector, data_mysql
+from dataclasses import dataclass
 
 
+@dataclass
 class Room:
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
+    id: int
+    name: str
+    students: list
 
 
 class RoomDB:
