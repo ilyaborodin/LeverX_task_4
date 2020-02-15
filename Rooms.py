@@ -6,7 +6,6 @@ from dataclasses import dataclass
 class Room:
     id: int
     name: str
-    students: list
 
 
 class RoomDB:
