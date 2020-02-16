@@ -2,6 +2,7 @@ import pymysql
 
 data_mysql = {
     "host": "localhost",
+    "port": 3308,
     "user": "nonroot",
     "password": "Mysekret047",
     "db": "Task4",
@@ -11,8 +12,9 @@ data_mysql = {
 class MysqlConnector:
     """Класс служит соединением с database"""
     def __init__(self, data_mysql):
-        self.connection = pymysql.connect(data_mysql["host"], data_mysql["user"],
-                                          data_mysql["password"], data_mysql["db"])
+        self.connection = pymysql.connect(host=data_mysql["host"], port=data_mysql["port"],
+                                          user=data_mysql["user"], password=data_mysql["password"],
+                                          db=data_mysql["db"])
         self.cursor = self.connection.cursor()
 
     def __enter__(self):
