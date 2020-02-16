@@ -1,14 +1,8 @@
-from dataclasses import dataclass
 from pymysql.err import IntegrityError
+from collections import namedtuple
 
 
-@dataclass
-class Student:
-    id: int
-    name: str
-    birthday: str
-    room: int
-    sex: str
+Student = namedtuple('Student', ['id', 'name', 'birthday', 'room', 'sex'])
 
 
 class StudentDB:
