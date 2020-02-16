@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 
 class ArgsParser:
+    """Класс служит для возврата аргументов с терминала"""
     def __init__(self):
         self.args = None
         self._set_args()
