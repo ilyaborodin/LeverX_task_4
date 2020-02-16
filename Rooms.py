@@ -6,6 +6,7 @@ Room = namedtuple('Room', ['id', 'name'])
 
 
 class RoomDB:
+    """Класс служит для работы с бд и сущностями Room"""
     def __init__(self, mysql_connector, data_mysql):
         self.MysqlConnector = mysql_connector
         self.data_mysql = data_mysql
@@ -85,6 +86,7 @@ class RoomDB:
 
 
 class RoomConverter:
+    """Класс преобразует информацию с бд в dicts для того, чтобы в будущем сохранить в json/xml файлы"""
     def convert_to_dicts_from_id_name_number(self, tuple_of_rooms: tuple) -> list:
         dicts = []
         for tuple_of_room in tuple_of_rooms:

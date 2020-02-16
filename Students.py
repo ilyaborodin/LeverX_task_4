@@ -6,6 +6,7 @@ Student = namedtuple('Student', ['id', 'name', 'birthday', 'room', 'sex'])
 
 
 class StudentDB:
+    """Класс служит для работы с бд и сущностями типа Student"""
     def __init__(self, mysql_connector, data_mysql):
         self.MysqlConnector = mysql_connector
         self.data_mysql = data_mysql

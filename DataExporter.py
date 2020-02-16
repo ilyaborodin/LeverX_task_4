@@ -4,6 +4,7 @@ from xml.dom.minidom import parseString
 
 
 class DataExporter:
+    """Класс преобразует наши данные в файлы json/xml"""
     def export_to(self, data_to_export: list or dict or tuple,
                   format_of_output: str, name_of_file: str) -> None:
         if format_of_output == "json":

@@ -9,6 +9,7 @@ data_mysql = {
 
 
 class MysqlConnector:
+    """Класс служит соединением с database"""
     def __init__(self, data_mysql):
         self.connection = pymysql.connect(data_mysql["host"], data_mysql["user"],
                                           data_mysql["password"], data_mysql["db"])
