@@ -13,6 +13,7 @@ class RoomDB:
         self.room_converter = RoomConverter()
         if not self.check_table():
             self.create_table()
+        # self.create_index()
 
     def load_in_db(self, rooms: list) -> None:
         with self.MysqlConnector(self.data_mysql) as db:
@@ -83,6 +84,14 @@ class RoomDB:
             response = db.fetchone()
             table_is_created = response is not None and "rooms" in response
         return table_is_created
+
+    def create_index(self):
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = "CREATE INDEX IX_Rooms ON rooms(id, name)"
+            try:
+                db.execute(sql)
+            except IntegrityError:
+                pass
 
 
 class RoomConverter:

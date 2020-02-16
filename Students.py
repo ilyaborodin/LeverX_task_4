@@ -45,3 +45,11 @@ class StudentDB:
             response = db.fetchone()
             table_is_created = response is not None and "students" in response
         return table_is_created
+
+    def create_index(self):
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = "CREATE INDEX IX_Students_room ON students(room, sex, birthday)"
+            try:
+                db.execute(sql)
+            except IntegrityError:
+                pass
