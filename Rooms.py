@@ -35,7 +35,15 @@ class RoomDB:
         return self.room_converter.convert_to_dicts_from_id_name_number(result)
 
     def get_with_smallest_avg_age(self) -> list:
-        pass
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = "SELECT rooms.id, rooms.name FROM rooms " \
+                  "JOIN students ON rooms.id=students.room " \
+                  "GROUP BY rooms.id, rooms.name " \
+                  "ORDER BY AVG(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
+                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s')))) " \
+                  "LIMIT 5"
+            result = db.query(sql)
+            return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def get_with_biggest_difference_in_ages(self) -> list:
         pass
@@ -66,4 +74,11 @@ class RoomConverter:
             dicts.append(dict(id=tuple_of_room[0],
                               name=tuple_of_room[1],
                               number_of_students=tuple_of_room[2]))
+        return dicts
+
+    def convert_to_dicts_from_id_name(self, tuple_of_rooms: tuple) -> list:
+        dicts = []
+        for tuple_of_room in tuple_of_rooms:
+            dicts.append(dict(id=tuple_of_room[0],
+                              name=tuple_of_room[1]))
         return dicts
