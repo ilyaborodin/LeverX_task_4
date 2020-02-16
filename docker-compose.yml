@@ -1,0 +1,15 @@
+version: "3"
+services:
+  db:
+    image: "mysql:8.0"
+    container_name: "mysql_task4"
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'Task4'
+      MYSQL_USER: 'nonroot'
+      MYSQL_PASSWORD: 'Mysekret047'
+      MYSQL_ROOT_PASSWORD: 'Mysekret047Mysekret047'
+    ports:
+      - '3308:3306'
+    expose:
+      - '3308'
