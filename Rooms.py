@@ -43,13 +43,33 @@ class RoomDB:
                   "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s')))) " \
                   "LIMIT 5"
             result = db.query(sql)
-            return self.room_converter.convert_to_dicts_from_id_name(result)
+        return self.room_converter.convert_to_dicts_from_id_name(result)
 
-    def get_with_biggest_difference_in_ages(self) -> list:
-        pass
+    def get_with_the_biggest_difference_in_ages(self) -> list:
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = "SELECT rooms.id, rooms.name " \
+                  "FROM rooms " \
+                  "JOIN students ON rooms.id=students.room " \
+                  "GROUP BY rooms.id, rooms.name " \
+                  "ORDER BY (MAX(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
+                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < " \
+                  "DATE_FORMAT(birthday, '%m%d%hh%n%s')))) - " \
+                  "MIN(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
+                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < " \
+                  "DATE_FORMAT(birthday, '%m%d%hh%n%s'))))) DESC " \
+                  "LIMIT 5;"
+            result = db.query(sql)
+        return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def get_with_heterosexuals(self) -> list:
-        pass
+        with self.MysqlConnector(self.data_mysql) as db:
+            sql = "SELECT id, name " \
+                  "FROM (SELECT rooms.id, rooms.name, count(DISTINCT sex) as 'count' " \
+                  "FROM rooms JOIN students ON rooms.id=students.room " \
+                  "GROUP BY rooms.id, rooms.name) as T " \
+                  "where count=1"
+            result = db.query(sql)
+        return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def create_table(self):
         with self.MysqlConnector(self.data_mysql) as db:
