@@ -62,11 +62,11 @@ class RoomDB:
 
     def get_with_heterosexuals(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
-            sql = """SELECT id, name
-            FROM (SELECT rooms.id, rooms.name, count(DISTINCT sex) as 'count'
-            FROM rooms JOIN students ON rooms.id=students.room
-            GROUP BY rooms.id, rooms.name) as T
-            where count=1"""
+            sql = """SELECT rooms.id, rooms.name
+            FROM rooms
+            LEFT JOIN students ON rooms.id=students.room
+            GROUP BY rooms.id, rooms.name
+            HAVING count(DISTINCT sex) = 1"""
             result = db.query(sql)
         return self.converter.from_tuples_to_rooms(result)
 
