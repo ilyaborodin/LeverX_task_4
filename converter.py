@@ -13,7 +13,7 @@ class Converter:
         students_list = []
         for json_student in json_list:
             students_list.append(students.Student(json_student["id"], json_student["name"], json_student["birthday"],
-                                    json_student["room"], json_student["sex"]))
+                                 json_student["room"], json_student["sex"]))
         return students_list
 
     def from_tuples_to_rooms(self, tuple_of_rooms: list) -> list:
