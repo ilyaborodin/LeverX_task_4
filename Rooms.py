@@ -1,4 +1,4 @@
-from pymysql.err import IntegrityError
+from pymysql.err import IntegrityError, InternalError
 from collections import namedtuple
 
 
@@ -11,8 +11,7 @@ class RoomDB:
         self.MysqlConnector = mysql_connector
         self.data_mysql = data_mysql
         self.room_converter = RoomConverter()
-        if not self.check_table():
-            self.create_table()
+        self.create_table()
         # self.create_index()
 
     def load_in_db(self, rooms: list) -> None:
@@ -75,15 +74,11 @@ class RoomDB:
             sql = 'CREATE TABLE rooms(' \
                   'id INTEGER PRIMARY KEY NOT NULL, ' \
                   'name VARCHAR(100) NOT NULL)'
-            db.execute(sql)
-
-    def check_table(self):
-        with self.MysqlConnector(self.data_mysql) as db:
-            sql = 'show tables like \'rooms\''
-            db.execute(sql)
-            response = db.fetchone()
-            table_is_created = response is not None and "rooms" in response
-        return table_is_created
+            try:
+                db.execute(sql)
+            except InternalError:
+                # print("Table 'rooms' already exists")
+                pass
 
     def create_index(self):
         with self.MysqlConnector(self.data_mysql) as db:
