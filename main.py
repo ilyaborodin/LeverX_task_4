@@ -1,5 +1,5 @@
 from mysql_connector import MysqlConnector, data_mysql
-from rooms import RoomDB, RoomConverter
+from rooms import RoomDB
 from students import StudentDB
 from file_reader import JsonReader
 from data_exporter import JsonExporter, XmlExporter

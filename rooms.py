@@ -10,7 +10,7 @@ class RoomDB:
     def __init__(self, mysql_connector, data_mysql):
         self.mysql_connector = mysql_connector
         self.data_mysql = data_mysql
-        self.room_converter = RoomConverter()
+        self.room_converter = RoomConverter
         self.create_table()
         self.create_index()
 
@@ -92,7 +92,8 @@ class RoomDB:
 
 class RoomConverter:
     """Класс преобразует информацию с бд в dicts для того, чтобы в будущем сохранить в json/xml файлы"""
-    def convert_to_dicts_from_id_name_number(self, tuple_of_rooms: tuple) -> list:
+    @staticmethod
+    def convert_to_dicts_from_id_name_number(tuple_of_rooms: tuple) -> list:
         dicts = []
         for tuple_of_room in tuple_of_rooms:
             dicts.append(dict(id=tuple_of_room[0],
@@ -100,7 +101,8 @@ class RoomConverter:
                               number_of_students=tuple_of_room[2]))
         return dicts
 
-    def convert_to_dicts_from_id_name(self, tuple_of_rooms: tuple) -> list:
+    @staticmethod
+    def convert_to_dicts_from_id_name(tuple_of_rooms: tuple) -> list:
         dicts = []
         for tuple_of_room in tuple_of_rooms:
             dicts.append(dict(id=tuple_of_room[0],

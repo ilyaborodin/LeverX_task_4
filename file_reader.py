@@ -6,7 +6,8 @@ from students import Student
 class JsonReader:
     """Класс служит для считывания информации с json файлов и преобразования
     ее в сущности Room и Student"""
-    def _load_json_file(self, path: str) -> list:
+    @staticmethod
+    def _load_json_file(path: str) -> list:
         try:
             with open(path, 'r', encoding='utf-8') as file:
                 json_text = json.load(file)
