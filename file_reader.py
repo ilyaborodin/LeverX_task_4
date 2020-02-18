@@ -1,9 +1,9 @@
 import json
-from Rooms import Room
-from Students import Student
+from rooms import Room
+from students import Student
 
 
-class JSONReader:
+class JsonReader:
     """Класс служит для считывания информации с json файлов и преобразования
     ее в сущности Room и Student"""
     def _load_json_file(self, path: str) -> list:

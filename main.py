@@ -1,16 +1,16 @@
-from Mysql_connector import MysqlConnector, data_mysql
-from Rooms import RoomDB, RoomConverter
-from Students import StudentDB
-from FileReader import JSONReader
-from DataExporter import DataExporter
-from ArgsParser import ArgsParser
+from mysql_connector import MysqlConnector, data_mysql
+from rooms import RoomDB, RoomConverter
+from students import StudentDB
+from file_reader import JsonReader
+from data_exporter import DataExporter
+from args_parser import ArgsParser
 
 
 def main():
     args_parser = ArgsParser()
     room_db = RoomDB(MysqlConnector, data_mysql)
     student_db = StudentDB(MysqlConnector, data_mysql)
-    json_reader = JSONReader()
+    json_reader = JsonReader()
     data_exporter = DataExporter()
     path_to_students, path_to_rooms, format_of_output = args_parser.get_args()
     rooms = json_reader.get_rooms(path_to_rooms)
