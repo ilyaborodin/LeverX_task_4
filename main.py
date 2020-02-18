@@ -1,4 +1,4 @@
-from mysql_connector import MysqlConnector, data_mysql
+from mysql_connector import MysqlConnector
 from rooms import RoomDB
 from students import StudentDB
 from file_reader import JsonReader
@@ -9,11 +9,11 @@ from converter import Converter
 
 def main():
     args_parser = ArgsParser()
+    path_to_students, path_to_rooms, format_of_output, data_mysql = args_parser.get_args()
     converter = Converter()
     room_db = RoomDB(MysqlConnector, data_mysql)
     student_db = StudentDB(MysqlConnector, data_mysql)
     json_reader = JsonReader()
-    path_to_students, path_to_rooms, format_of_output = args_parser.get_args()
 
     json_rooms = json_reader.load_json_file(path_to_rooms)
     rooms = converter.from_list_to_rooms(json_rooms)
@@ -46,4 +46,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        print(str(error))
