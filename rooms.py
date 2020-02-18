@@ -85,7 +85,7 @@ class RoomDB:
             sql = "CREATE INDEX IX_Rooms ON rooms(id, name)"
             try:
                 db.execute(sql)
-            except IntegrityError:
+            except InternalError:
                 # print("Index IX_Rooms already exists")
                 pass
 

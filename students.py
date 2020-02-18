@@ -44,6 +44,6 @@ class StudentDB:
             sql = "CREATE INDEX IX_Students_room ON students(room, sex, birthday)"
             try:
                 db.execute(sql)
-            except IntegrityError:
+            except InternalError:
                 # print("Index IX_Students already exists")
                 pass
