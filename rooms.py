@@ -1,5 +1,6 @@
 from pymysql.err import IntegrityError, InternalError
 from collections import namedtuple
+from converter import Converter
 
 
 Room = namedtuple('Room', ['id', 'name'])
@@ -10,7 +11,7 @@ class RoomDB:
     def __init__(self, mysql_connector, data_mysql):
         self.mysql_connector = mysql_connector
         self.data_mysql = data_mysql
-        self.room_converter = RoomConverter
+        self.converter = Converter()
         self.create_table()
         self.create_index()
 
@@ -30,7 +31,7 @@ class RoomDB:
             FROM rooms JOIN students ON rooms.id=students.room
             GROUP BY rooms.id, rooms.name"""
             result = db.query(sql)
-        return self.room_converter.convert_to_dicts_from_id_name_number(result)
+        return self.converter.from_tuples_to_rooms_with_counter(result)
 
     def get_with_smallest_avg_age(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
@@ -41,7 +42,7 @@ class RoomDB:
             (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s'))))
             LIMIT 5"""
             result = db.query(sql)
-        return self.room_converter.convert_to_dicts_from_id_name(result)
+        return self.converter.from_tuples_to_rooms(result)
 
     def get_with_the_biggest_difference_in_ages(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
@@ -57,7 +58,7 @@ class RoomDB:
             DATE_FORMAT(birthday, '%m%d%hh%n%s'))))) DESC
             LIMIT 5;"""
             result = db.query(sql)
-        return self.room_converter.convert_to_dicts_from_id_name(result)
+        return self.converter.from_tuples_to_rooms(result)
 
     def get_with_heterosexuals(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
@@ -67,7 +68,7 @@ class RoomDB:
             GROUP BY rooms.id, rooms.name) as T
             where count=1"""
             result = db.query(sql)
-        return self.room_converter.convert_to_dicts_from_id_name(result)
+        return self.converter.from_tuples_to_rooms(result)
 
     def create_table(self):
         with self.mysql_connector(self.data_mysql) as db:
@@ -88,23 +89,3 @@ class RoomDB:
             except InternalError:
                 # print("Index IX_Rooms already exists")
                 pass
-
-
-class RoomConverter:
-    """Класс преобразует информацию с бд в dicts для того, чтобы в будущем сохранить в json/xml файлы"""
-    @staticmethod
-    def convert_to_dicts_from_id_name_number(tuple_of_rooms: tuple) -> list:
-        dicts = []
-        for tuple_of_room in tuple_of_rooms:
-            dicts.append(dict(id=tuple_of_room[0],
-                              name=tuple_of_room[1],
-                              number_of_students=tuple_of_room[2]))
-        return dicts
-
-    @staticmethod
-    def convert_to_dicts_from_id_name(tuple_of_rooms: tuple) -> list:
-        dicts = []
-        for tuple_of_room in tuple_of_rooms:
-            dicts.append(dict(id=tuple_of_room[0],
-                              name=tuple_of_room[1]))
-        return dicts
