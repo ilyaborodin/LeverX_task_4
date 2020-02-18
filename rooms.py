@@ -83,7 +83,7 @@ class RoomDB:
 
     def create_index(self):
         with self.mysql_connector(self.data_mysql) as db:
-            sql = "CREATE INDEX IX_Rooms ON rooms(id, name)"
+            sql = "CREATE INDEX IX_Rooms ON rooms(id)"
             try:
                 db.execute(sql)
             except InternalError:
