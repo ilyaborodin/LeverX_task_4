@@ -28,7 +28,7 @@ class RoomDB:
     def get_all(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
             sql = """SELECT rooms.id, rooms.name, count(*) AS 'number_of_students'
-            FROM rooms JOIN students ON rooms.id=students.room
+            FROM rooms LEFT JOIN students ON rooms.id=students.room
             GROUP BY rooms.id, rooms.name"""
             result = db.query(sql)
         return self.converter.from_tuples_to_rooms_with_counter(result)
@@ -36,7 +36,7 @@ class RoomDB:
     def get_with_smallest_avg_age(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
             sql = """SELECT rooms.id, rooms.name FROM rooms
-            JOIN students ON rooms.id=students.room
+            LEFT JOIN students ON rooms.id=students.room
             GROUP BY rooms.id, rooms.name
             ORDER BY AVG(((YEAR(CURRENT_DATE)-YEAR(birthday))-
             (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s'))))
@@ -48,7 +48,7 @@ class RoomDB:
         with self.mysql_connector(self.data_mysql) as db:
             sql = """SELECT rooms.id, rooms.name
             FROM rooms
-            JOIN students ON rooms.id=students.room
+            LEFT JOIN students ON rooms.id=students.room
             GROUP BY rooms.id, rooms.name
             ORDER BY (MAX(((YEAR(CURRENT_DATE)-YEAR(birthday))-
             (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') <
