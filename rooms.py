@@ -29,7 +29,7 @@ class RoomDB:
         with self.mysql_connector(self.data_mysql) as db:
             sql = """SELECT rooms.id, rooms.name, count(*) AS 'number_of_students'
             FROM rooms LEFT JOIN students ON rooms.id=students.room
-            GROUP BY rooms.id, rooms.name"""
+            GROUP BY rooms.id"""
             result = db.query(sql)
         return self.converter.from_tuples_to_rooms_with_counter(result)
 
@@ -37,7 +37,7 @@ class RoomDB:
         with self.mysql_connector(self.data_mysql) as db:
             sql = """SELECT rooms.id, rooms.name FROM rooms
             LEFT JOIN students ON rooms.id=students.room
-            GROUP BY rooms.id, rooms.name
+            GROUP BY rooms.id
             ORDER BY AVG(((YEAR(CURRENT_DATE)-YEAR(birthday))-
             (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s'))))
             LIMIT 5"""
@@ -49,7 +49,7 @@ class RoomDB:
             sql = """SELECT rooms.id, rooms.name
             FROM rooms
             LEFT JOIN students ON rooms.id=students.room
-            GROUP BY rooms.id, rooms.name
+            GROUP BY rooms.id
             ORDER BY (MAX(((YEAR(CURRENT_DATE)-YEAR(birthday))-
             (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') <
             DATE_FORMAT(birthday, '%m%d%hh%n%s')))) -
@@ -65,7 +65,7 @@ class RoomDB:
             sql = """SELECT rooms.id, rooms.name
             FROM rooms
             LEFT JOIN students ON rooms.id=students.room
-            GROUP BY rooms.id, rooms.name
+            GROUP BY rooms.id
             HAVING count(DISTINCT sex) = 1"""
             result = db.query(sql)
         return self.converter.from_tuples_to_rooms(result)
