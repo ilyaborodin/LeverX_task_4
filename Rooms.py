@@ -17,8 +17,8 @@ class RoomDB:
     def load_in_db(self, rooms: list) -> None:
         with self.MysqlConnector(self.data_mysql) as db:
             for room in rooms:
-                sql = "INSERT INTO rooms (id, name)" \
-                      " VALUES ({id}, '{name}')".format(id=room.id, name=room.name)
+                sql = """INSERT INTO rooms (id, name)
+                VALUES ({id}, '{name}')""".format(id=room.id, name=room.name)
                 try:
                     db.execute(sql)
                 except IntegrityError:
@@ -26,54 +26,54 @@ class RoomDB:
 
     def get_all(self) -> list:
         with self.MysqlConnector(self.data_mysql) as db:
-            sql = "SELECT rooms.id, rooms.name, count(*) AS 'number_of_students' " \
-                "FROM rooms JOIN students ON rooms.id=students.room " \
-                "GROUP BY rooms.id, rooms.name"
+            sql = """SELECT rooms.id, rooms.name, count(*) AS 'number_of_students'
+            FROM rooms JOIN students ON rooms.id=students.room
+            GROUP BY rooms.id, rooms.name"""
             result = db.query(sql)
         return self.room_converter.convert_to_dicts_from_id_name_number(result)
 
     def get_with_smallest_avg_age(self) -> list:
         with self.MysqlConnector(self.data_mysql) as db:
-            sql = "SELECT rooms.id, rooms.name FROM rooms " \
-                  "JOIN students ON rooms.id=students.room " \
-                  "GROUP BY rooms.id, rooms.name " \
-                  "ORDER BY AVG(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
-                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s')))) " \
-                  "LIMIT 5"
+            sql = """SELECT rooms.id, rooms.name FROM rooms
+            JOIN students ON rooms.id=students.room
+            GROUP BY rooms.id, rooms.name
+            ORDER BY AVG(((YEAR(CURRENT_DATE)-YEAR(birthday))-
+            (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s')))) 
+            LIMIT 5"""
             result = db.query(sql)
         return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def get_with_the_biggest_difference_in_ages(self) -> list:
         with self.MysqlConnector(self.data_mysql) as db:
-            sql = "SELECT rooms.id, rooms.name " \
-                  "FROM rooms " \
-                  "JOIN students ON rooms.id=students.room " \
-                  "GROUP BY rooms.id, rooms.name " \
-                  "ORDER BY (MAX(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
-                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < " \
-                  "DATE_FORMAT(birthday, '%m%d%hh%n%s')))) - " \
-                  "MIN(((YEAR(CURRENT_DATE)-YEAR(birthday))-" \
-                  "(DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < " \
-                  "DATE_FORMAT(birthday, '%m%d%hh%n%s'))))) DESC " \
-                  "LIMIT 5;"
+            sql = """SELECT rooms.id, rooms.name
+            FROM rooms
+            JOIN students ON rooms.id=students.room
+            GROUP BY rooms.id, rooms.name
+            ORDER BY (MAX(((YEAR(CURRENT_DATE)-YEAR(birthday))-
+            (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') <
+            DATE_FORMAT(birthday, '%m%d%hh%n%s')))) -
+            MIN(((YEAR(CURRENT_DATE)-YEAR(birthday))-
+            (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') <
+            DATE_FORMAT(birthday, '%m%d%hh%n%s'))))) DESC
+            LIMIT 5;"""
             result = db.query(sql)
         return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def get_with_heterosexuals(self) -> list:
         with self.MysqlConnector(self.data_mysql) as db:
-            sql = "SELECT id, name " \
-                  "FROM (SELECT rooms.id, rooms.name, count(DISTINCT sex) as 'count' " \
-                  "FROM rooms JOIN students ON rooms.id=students.room " \
-                  "GROUP BY rooms.id, rooms.name) as T " \
-                  "where count=1"
+            sql = """SELECT id, name
+            FROM (SELECT rooms.id, rooms.name, count(DISTINCT sex) as 'count'
+            FROM rooms JOIN students ON rooms.id=students.room
+            GROUP BY rooms.id, rooms.name) as T
+            where count=1"""
             result = db.query(sql)
         return self.room_converter.convert_to_dicts_from_id_name(result)
 
     def create_table(self):
         with self.MysqlConnector(self.data_mysql) as db:
-            sql = 'CREATE TABLE rooms(' \
-                  'id INTEGER PRIMARY KEY NOT NULL, ' \
-                  'name VARCHAR(100) NOT NULL)'
+            sql = """CREATE TABLE rooms(
+            id INTEGER PRIMARY KEY NOT NULL,
+            name VARCHAR(100) NOT NULL)"""
             try:
                 db.execute(sql)
             except InternalError:
@@ -86,6 +86,7 @@ class RoomDB:
             try:
                 db.execute(sql)
             except IntegrityError:
+                # print("Index IX_Rooms already exists")
                 pass
 
 
