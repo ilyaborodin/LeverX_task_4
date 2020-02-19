@@ -17,13 +17,14 @@ class RoomDB:
 
     def load_in_db(self, rooms: list) -> None:
         with self.mysql_connector(self.data_mysql) as db:
-            for room in rooms:
-                sql = """INSERT INTO rooms (id, name)
-                VALUES ({id}, '{name}')""".format(id=room.id, name=room.name)
-                try:
-                    db.execute(sql)
-                except IntegrityError:
-                    continue
+            sql = """INSERT INTO rooms (id, name)
+            VALUES (%s, %s)"""
+            args = [(room.id, room.name) for room in rooms]
+            try:
+                db.execute_many(sql, args)
+            except IntegrityError:
+                # print("Data in table 'rooms' already exists")
+                pass
 
     def get_all(self) -> list:
         with self.mysql_connector(self.data_mysql) as db:
@@ -72,14 +73,10 @@ class RoomDB:
 
     def create_table(self):
         with self.mysql_connector(self.data_mysql) as db:
-            sql = """CREATE TABLE rooms(
+            sql = """CREATE TABLE IF NOT EXISTS rooms(
             id INTEGER PRIMARY KEY NOT NULL,
             name VARCHAR(100) NOT NULL)"""
-            try:
-                db.execute(sql)
-            except InternalError:
-                # print("Table 'rooms' already exists")
-                pass
+            db.execute(sql)
 
     def create_index(self):
         with self.mysql_connector(self.data_mysql) as db:

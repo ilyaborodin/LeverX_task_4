@@ -6,6 +6,7 @@ class MysqlConnector:
     def __init__(self, data_mysql):
         self.connection = self.get_connection(data_mysql)
         self.cursor = self.connection.cursor()
+        self.cursor._defer_warnings = True
 
     def __enter__(self):
         return self

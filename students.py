@@ -14,30 +14,23 @@ class StudentDB:
 
     def load_in_db(self, students: list) -> None:
         with self.mysql_connector(self.data_mysql) as db:
-            for student in students:
-                sql = """INSERT INTO students (id, name, birthday, sex, room)
-                VALUES ({id}, '{name}', '{birthday}', '{sex}', {room})""".format(id=student.id,
-                                                                                 name=student.name,
-                                                                                 birthday=student.birthday,
-                                                                                 sex=student.sex,
-                                                                                 room=student.room)
-                try:
-                    db.execute(sql)
-                except IntegrityError:
-                    continue
+            sql = """INSERT INTO students (id, name, birthday, sex, room)
+            VALUES (%s, %s, %s, %s, %s)"""
+            args = [(student.id, student.name, student.birthday, student.sex, student.room) for student in students]
+            try:
+                db.execute_many(sql, args)
+            except IntegrityError:
+                # print("Data in table 'students' already exists")
+                pass
 
     def create_table(self):
         with self.mysql_connector(self.data_mysql) as db:
-            sql = """CREATE TABLE students(id INTEGER PRIMARY KEY NOT NULL,
+            sql = """CREATE TABLE IF NOT EXISTS students(id INTEGER PRIMARY KEY NOT NULL,
             birthday DATETIME, name VARCHAR(100) NOT NULL,
             sex VARCHAR(1),
             room INTEGER,
             FOREIGN KEY (room) REFERENCES rooms(id))"""
-            try:
-                db.execute(sql)
-            except InternalError:
-                # print("Table 'rooms' already exists")
-                pass
+            db.execute(sql)
 
     def create_index(self):
         with self.mysql_connector(self.data_mysql) as db:
