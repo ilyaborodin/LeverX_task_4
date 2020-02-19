@@ -32,6 +32,9 @@ class MysqlConnector:
     def execute(self, sql):
         self.cursor.execute(sql)
 
+    def execute_many(self, sql, args):
+        self.cursor.executemany(sql, args)
+
     def fetchall(self):
         return self.cursor.fetchall()
 
