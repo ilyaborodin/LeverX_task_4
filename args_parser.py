@@ -11,14 +11,14 @@ class ArgsParser:
         self.get_db_args()
         self._set_args()
 
-    def _set_args(self) -> None:
+    def _set_args(self):
         parser = argparse.ArgumentParser(description='Command-line utility.')
         parser.add_argument('path_to_students', type=str, help='Path to students file')
         parser.add_argument('path_to_rooms', type=str, help='Path to rooms file')
         parser.add_argument('format', choices=['json', 'xml'], help='Output format')
         self.args = parser.parse_args()
 
-    def get_args(self) -> tuple:
+    def get_args(self):
         return self.args.path_to_students, self.args.path_to_rooms,\
                self.args.format, self.data_mysql
 

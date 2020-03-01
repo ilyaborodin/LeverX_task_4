@@ -1,4 +1,5 @@
 from db_manager import DbManager
+from typing import List, Dict
 
 
 class StudentDB:
@@ -9,7 +10,7 @@ class StudentDB:
         self.create_table()
         self.create_index()
 
-    def load_in_db(self, students: list) -> None:
+    def load_in_db(self, students: List[Dict]) -> None:
         sql = """INSERT INTO students (id, name, birthday, sex, room)
             VALUES (%s, %s, %s, %s, %s)"""
         args = [(student["id"], student["name"], student["birthday"], student["sex"],

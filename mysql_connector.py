@@ -24,7 +24,7 @@ class MysqlConnector:
             raise Exception("Введены неверные данные для подключения к бд")
         return connection
 
-    def close(self) -> None:
+    def close(self):
         self.connection.close()
 
     def commit(self):

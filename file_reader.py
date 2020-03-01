@@ -4,7 +4,7 @@ import json
 class JsonReader:
     """Класс служит для считывания информации с json файлов и преобразования
     ее в сущности Room и Student"""
-    def load_json_file(self, path: str) -> list:
+    def load_json_file(self, path: str):
         try:
             with open(path, 'r', encoding='utf-8') as file:
                 json_list = json.load(file)

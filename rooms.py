@@ -1,5 +1,6 @@
 from converter import Converter
 from db_manager import DbManager
+from typing import List, Dict
 
 
 class RoomDB:
@@ -10,20 +11,20 @@ class RoomDB:
         self.create_table()
         self.create_index()
 
-    def load_in_db(self, rooms: list) -> None:
+    def load_in_db(self, rooms: List[Dict]):
         sql = """INSERT INTO rooms (id, name)
         VALUES (%s, %s)"""
         args = [(room["id"], room["name"]) for room in rooms]
         self.db_manager.execute_many(sql, args)
 
-    def get_all(self) -> list:
+    def get_all(self):
         sql = """SELECT rooms.id, rooms.name, count(*) AS 'number_of_students'
         FROM rooms LEFT JOIN students ON rooms.id=students.room
         GROUP BY rooms.id"""
         result = self.db_manager.execute_query_with_result(sql)
         return self.converter.from_tuples_to_dicts_with_counter(result)
 
-    def get_with_smallest_avg_age(self) -> list:
+    def get_with_smallest_avg_age(self):
         sql = """SELECT rooms.id, rooms.name FROM rooms
         LEFT JOIN students ON rooms.id=students.room
         GROUP BY rooms.id
@@ -33,7 +34,7 @@ class RoomDB:
         result = self.db_manager.execute_query_with_result(sql)
         return self.converter.from_tuples_to_dicts(result)
 
-    def get_with_the_biggest_difference_in_ages(self) -> list:
+    def get_with_the_biggest_difference_in_ages(self):
         sql = """SELECT rooms.id, rooms.name
         FROM rooms
         LEFT JOIN students ON rooms.id=students.room
@@ -48,7 +49,7 @@ class RoomDB:
         result = self.db_manager.execute_query_with_result(sql)
         return self.converter.from_tuples_to_dicts(result)
 
-    def get_with_heterosexuals(self) -> list:
+    def get_with_heterosexuals(self):
         sql = """SELECT rooms.id, rooms.name
         FROM rooms
         LEFT JOIN students ON rooms.id=students.room

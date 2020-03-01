@@ -1,4 +1,5 @@
 from pymysql.err import IntegrityError, InternalError
+from typing import List, Tuple
 
 
 class DbManager:
@@ -18,7 +19,7 @@ class DbManager:
                 # print("Data already exists")
                 pass
 
-    def execute_many(self, sql: str, args):
+    def execute_many(self, sql: str, args: List[Tuple]):
         with self.mysql_connector(self.data_mysql) as db:
             try:
                 db.execute_many(sql, args)
