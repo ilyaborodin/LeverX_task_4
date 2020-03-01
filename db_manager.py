@@ -8,13 +8,14 @@ class DbManager:
 
     def execute_query_with_result(self, sql: str):
         with self.mysql_connector(self.data_mysql) as db:
-            return db.execute_with_result(sql)
+            result = db.execute_with_result(sql)
+            return self._result_repr(result)
 
     def execute_query(self, sql: str):
         with self.mysql_connector(self.data_mysql) as db:
             try:
                 db.execute(sql)
-            except InternalError or IntegrityError:
+            except (InternalError, IntegrityError):
                 # print("Data already exists")
                 pass
 
@@ -22,6 +23,6 @@ class DbManager:
         with self.mysql_connector(self.data_mysql) as db:
             try:
                 db.execute_many(sql, args)
-            except InternalError or IntegrityError:
+            except (InternalError, IntegrityError):
                 # print("Data already exists")
                 pass
