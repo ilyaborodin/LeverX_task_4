@@ -1,9 +1,5 @@
-from pymysql.err import IntegrityError, InternalError
-from collections import namedtuple
 from converter import Converter
 from db_manager import DbManager
-
-Room = namedtuple('Room', ['id', 'name'])
 
 
 class RoomDB:
@@ -17,7 +13,7 @@ class RoomDB:
     def load_in_db(self, rooms: list) -> None:
         sql = """INSERT INTO rooms (id, name)
         VALUES (%s, %s)"""
-        args = [(room.id, room.name) for room in rooms]
+        args = [(room["id"], room["name"]) for room in rooms]
         self.db_manager.execute_many(sql, args)
 
     def get_all(self) -> list:
@@ -25,7 +21,7 @@ class RoomDB:
         FROM rooms LEFT JOIN students ON rooms.id=students.room
         GROUP BY rooms.id"""
         result = self.db_manager.execute_query_with_result(sql)
-        return self.converter.from_tuples_to_rooms_with_counter(result)
+        return self.converter.from_tuples_to_dicts_with_counter(result)
 
     def get_with_smallest_avg_age(self) -> list:
         sql = """SELECT rooms.id, rooms.name FROM rooms
@@ -35,7 +31,7 @@ class RoomDB:
         (DATE_FORMAT(CURRENT_DATE, '%m%d%hh%n%s') < DATE_FORMAT(birthday, '%m%d%hh%n%s'))))
         LIMIT 5"""
         result = self.db_manager.execute_query_with_result(sql)
-        return self.converter.from_tuples_to_rooms(result)
+        return self.converter.from_tuples_to_dicts(result)
 
     def get_with_the_biggest_difference_in_ages(self) -> list:
         sql = """SELECT rooms.id, rooms.name
@@ -50,7 +46,7 @@ class RoomDB:
         DATE_FORMAT(birthday, '%m%d%hh%n%s'))))) DESC
         LIMIT 5;"""
         result = self.db_manager.execute_query_with_result(sql)
-        return self.converter.from_tuples_to_rooms(result)
+        return self.converter.from_tuples_to_dicts(result)
 
     def get_with_heterosexuals(self) -> list:
         sql = """SELECT rooms.id, rooms.name
@@ -59,7 +55,7 @@ class RoomDB:
         GROUP BY rooms.id
         HAVING count(DISTINCT sex) = 1"""
         result = self.db_manager.execute_query_with_result(sql)
-        return self.converter.from_tuples_to_rooms(result)
+        return self.converter.from_tuples_to_dicts(result)
 
     def create_table(self):
         sql = """CREATE TABLE IF NOT EXISTS rooms(

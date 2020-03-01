@@ -8,8 +8,7 @@ class DbManager:
 
     def execute_query_with_result(self, sql: str):
         with self.mysql_connector(self.data_mysql) as db:
-            result = db.execute_with_result(sql)
-            return self._result_repr(result)
+            return db.execute_with_result(sql)
 
     def execute_query(self, sql: str):
         with self.mysql_connector(self.data_mysql) as db:

@@ -1,8 +1,4 @@
-from pymysql.err import IntegrityError, InternalError
-from collections import namedtuple
 from db_manager import DbManager
-
-Student = namedtuple('Student', ['id', 'name', 'birthday', 'room', 'sex'])
 
 
 class StudentDB:
@@ -16,7 +12,8 @@ class StudentDB:
     def load_in_db(self, students: list) -> None:
         sql = """INSERT INTO students (id, name, birthday, sex, room)
             VALUES (%s, %s, %s, %s, %s)"""
-        args = [(student.id, student.name, student.birthday, student.sex, student.room) for student in students]
+        args = [(student["id"], student["name"], student["birthday"], student["sex"],
+                 student["room"]) for student in students]
         self.db_manager.execute_many(sql, args)
 
     def create_table(self):
