@@ -42,6 +42,6 @@ class MysqlConnector:
     def fetchone(self):
         return self.cursor.fetchone()
 
-    def query(self, sql):
+    def execute_with_result(self, sql):
         self.cursor.execute(sql)
         return self.fetchall()
